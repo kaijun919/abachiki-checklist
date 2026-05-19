@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#b8860b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="アバチキリスト">
+<title>暴れん坊チキン チェックリスト</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d00;font-family:'Noto Sans JP',sans-serif;color:#fff;overscroll-behavior:none}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
+select option{background:#0d0d00}
+button{font-family:inherit}
+@keyframes fp{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+#hd{background:linear-gradient(135deg,#8b6914,#b8860b 40%,#d4a520);position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(184,134,11,.5)}
+#hi{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+#lg{display:flex;align-items:center;gap:10px}
+#fl{font-size:30px}
+#lt{font-size:20px;font-weight:900;letter-spacing:-.5px;text-shadow:0 2px 8px rgba(0,0,0,.4);line-height:1.1}
+#ls{font-size:10px;opacity:.85;letter-spacing:2px;text-transform:uppercase}
+#pw{height:5px;background:rgba(0,0,0,.3)}
+#pf{height:100%;background:#fff;transition:width .5s;border-radius:0 3px 3px 0;width:0}
+#hr{text-align:right}
+#pp{font-size:24px;font-weight:900}
+#pc{font-size:10px;opacity:.8}
+
+#nv{display:flex;background:#1a1500;border-bottom:2px solid #b8860b}
+.nb{flex:1;padding:12px 8px;background:transparent;border:none;color:rgba(255,255,255,.5);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px}
+.nb.on{background:#b8860b;color:#0d0d00}
+
+.ct{padding:16px;max-width:600px;margin:0 auto}
+#es{display:flex;align-items:center;gap:8px;margin-bottom:16px;background:#1a1500;border-radius:12px;padding:12px;border:1px solid rgba(184,134,11,.3)}
+#ev{flex:1;background:transparent;border:none;color:#fff;font-size:15px;font-weight:700;outline:none;cursor:pointer;font-family:inherit}
+.rb{background:#1a1500;border:1px solid #b8860b;color:#b8860b;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer;font-size:11px;white-space:nowrap}
+
+#sr{display:flex;gap:8px;margin-bottom:16px}
+.sc{flex:1;border-radius:12px;padding:10px;text-align:center}
+.sn{font-size:24px;font-weight:900;line-height:1}
+.sl{font-size:10px;opacity:.7;margin-top:2px;font-weight:600;letter-spacing:.5px}
+
+/* ソートモードバー */
+#sortbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.smb{background:transparent;border:1px solid rgba(212,165,32,.5);color:#d4a520;border-radius:8px;padding:6px 14px;font-weight:800;cursor:pointer;font-size:11px;white-space:nowrap}
+.smb.on{background:#d4a520;color:#0d0d00}
+.sort-hint{font-size:10px;color:rgba(255,255,255,.35);display:none}
+.sort-hint.show{display:block}
+
+/* カテゴリ */
+.cb{background:#1a1500;border-radius:16px;margin-bottom:12px;border:1px solid rgba(184,134,11,.2);overflow:hidden}
+.cb.sm{border-color:rgba(212,165,32,.4)}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(90deg,rgba(184,134,11,.15),transparent);border-bottom:1px solid rgba(184,134,11,.15)}
+.cn{font-size:14px;font-weight:800}
+.cs{font-size:11px;opacity:.6;margin-top:2px}
+.ca{display:flex;align-items:center;gap:6px}
+.ib{background:transparent;border:none;color:#ff6b6b;cursor:pointer;font-size:18px;padding:2px 6px}
+.catsa{border-radius:6px;width:30px;height:30px;font-size:13px;font-weight:900;cursor:pointer;border:1px solid #d4a520;background:#2a2000;color:#d4a520;display:inline-flex;align-items:center;justify-content:center}
+.catsa:disabled{border-color:#444;background:transparent;color:#444;cursor:default}
+
+/* アイテム行 */
+.ir{display:flex;align-items:center;gap:8px;padding:9px 10px 9px 14px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
+.ir.ck{background:rgba(46,204,113,.07)}
+
+/* 並び替えボタン列 */
+.mvb{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.mva{width:22px;height:18px;background:#2a2000;border:1px solid #b8860b;color:#d4a520;border-radius:4px;cursor:pointer;font-size:9px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.mva:disabled{border-color:#333;background:transparent;color:#333;cursor:default}
+
+.bx{width:22px;height:22px;border-radius:6px;border:2px solid #b8860b;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:12px;font-weight:900}
+.bx.ck{border-color:#2ecc71;background:#2ecc71}
+.nm{flex:1;font-size:14px;font-weight:600;cursor:pointer;word-break:break-all}
+.nm.ck{text-decoration:line-through;opacity:.5}
+.qc{display:flex;align-items:center;gap:3px;background:rgba(13,13,0,.4);border-radius:8px;padding:2px;flex-shrink:0}
+.qb{background:#b8860b;border:none;color:#0d0d00;width:24px;height:24px;border-radius:5px;cursor:pointer;font-size:15px;font-weight:900;display:inline-flex;align-items:center;justify-content:center}
+.qn{font-size:12px;font-weight:800;min-width:22px;text-align:center;color:#d4a520}
+.db{background:transparent;border:none;color:#ff6b6b;cursor:pointer;font-size:17px;padding:0 3px;flex-shrink:0}
+
+/* チェック済み区切り */
+.ck-div{font-size:10px;color:rgba(255,255,255,.28);letter-spacing:1px;padding:5px 14px 4px;background:rgba(46,204,113,.04);border-top:1px dashed rgba(46,204,113,.2)}
+
+.aib{width:100%;padding:10px;background:transparent;border:1px dashed rgba(184,134,11,.3);border-radius:0 0 12px 12px;color:#b8860b;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px}
+.acb{width:100%;padding:14px;background:transparent;border:2px dashed rgba(184,134,11,.3);border-radius:16px;color:#b8860b;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-bottom:12px}
+.ar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;background:#0d0d00;border-top:1px solid rgba(184,134,11,.13)}
+.ti{background:#1a1500;border:1px solid rgba(184,134,11,.33);border-radius:8px;color:#fff;padding:8px 12px;font-size:13px;outline:none;font-family:inherit}
+.qi{width:52px;flex-shrink:0;background:#1a1500;border:1px solid rgba(184,134,11,.33);border-radius:8px;color:#d4a520;padding:8px;font-size:13px;outline:none;text-align:center;font-weight:800;font-family:inherit}
+.ok{flex-shrink:0;background:#b8860b;border:none;color:#0d0d00;border-radius:8px;padding:8px 14px;font-weight:800;cursor:pointer;font-size:13px}
+.ng{flex-shrink:0;background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:8px 10px;font-weight:700;cursor:pointer;font-size:13px}
+
+#mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);align-items:center;justify-content:center;z-index:200;padding:20px}
+#mo.show{display:flex}
+#mb{background:#1a1500;border:2px solid #b8860b;border-radius:20px;padding:24px;width:100%;max-width:360px}
+.mt{font-size:16px;font-weight:900;margin-bottom:16px;color:#d4a520}
+.ec{background:#1a1500;border:1px solid rgba(184,134,11,.2);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.ec.on{border:2px solid #b8860b}
+.esb{background:#1a1500;border:1px solid #b8860b;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer;font-size:12px;flex-shrink:0}
+.esb.on{background:#b8860b;color:#0d0d00}
+.fb{background:#1a1500;border:1px solid rgba(184,134,11,.2);border-radius:16px;padding:16px;margin-bottom:12px}
+.ft{font-size:14px;font-weight:800;color:#d4a520;margin-bottom:12px}
+.fl2{font-size:11px;color:#d4a520;font-weight:700;margin-bottom:6px;letter-spacing:.5px;display:block}
+.fi{width:100%;background:#0d0d00;border:1px solid rgba(184,134,11,.33);border-radius:8px;color:#fff;padding:8px 12px;font-size:13px;outline:none;font-family:inherit;margin-bottom:8px;display:block}
+.fb2{width:100%;background:#b8860b;border:none;color:#0d0d00;border-radius:10px;padding:12px;font-weight:800;cursor:pointer;font-size:14px}
+.emp{text-align:center;padding:40px 20px;opacity:.5}
+.stl{font-size:16px;font-weight:900;color:#d4a520;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hd">
+  <div id="hi">
+    <div id="lg"><span id="fl">🍗</span><div><div id="lt">暴れん坊チキン</div><div id="ls">Event Checklist</div></div></div>
+    <div id="hr"><div id="pp">0%</div><div id="pc">0/0</div></div>
+  </div>
+  <div id="pw"><div id="pf"></div></div>
+</div>
+<div id="nv">
+  <button class="nb on" id="n0" onclick="sw('c')">📋 チェックリスト</button>
+  <button class="nb" id="n1" onclick="sw('e')">📅 イベント</button>
+</div>
+
+<!-- チェックリスト -->
+<div id="vc" class="ct">
+  <div id="es">
+    <span style="font-size:20px">📍</span>
+    <select id="ev" onchange="onSel(this.value)"></select>
+    <button class="rb" onclick="doReset()">↺ リセット</button>
+  </div>
+  <div id="sr">
+    <div class="sc" style="background:rgba(184,134,11,.12);border:1px solid rgba(184,134,11,.33)"><div class="sn" style="color:#d4a520" id="s0">0</div><div class="sl">TOTAL</div></div>
+    <div class="sc" style="background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.33)"><div class="sn" style="color:#2ecc71" id="s1">0</div><div class="sl">CHECKED</div></div>
+    <div class="sc" style="background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.33)"><div class="sn" style="color:#e74c3c" id="s2">0</div><div class="sl">REMAINING</div></div>
+  </div>
+  <div id="sortbar" style="display:none">
+    <button class="smb" id="smb" onclick="togSort()">⇅ 並び替えモード</button>
+    <span class="sort-hint" id="sorthint">▲▼ で品目とカテゴリを移動</span>
+  </div>
+  <div id="cc"></div>
+  <button class="acb" id="acb" onclick="showAC()">＋ カテゴリを追加</button>
+  <div id="acf" style="display:none" class="fb">
+    <div class="ft">新しいカテゴリ</div>
+    <div style="display:flex;gap:8px">
+      <input class="ti" style="flex:1" id="ncn" placeholder="例: 🧃 ドリンク類">
+      <button class="ok" onclick="doAddCat()">追加</button>
+      <button class="ng" onclick="hideAC()">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- イベント -->
+<div id="ve" class="ct" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div class="stl" style="margin-bottom:0">📅 イベント管理</div>
+    <button onclick="hardReset()" style="background:transparent;border:1px solid #555;color:#888;border-radius:8px;padding:5px 10px;font-size:10px;cursor:pointer">🔄 初期化</button>
+  </div>
+  <div id="el"></div>
+  <div class="fb">
+    <div class="ft">＋ 新しいイベントを追加</div>
+    <input class="fi" id="nen" placeholder="イベント名（例: 夏祭り2026）">
+    <input class="fi" id="ned" type="date">
+    <div style="margin-bottom:12px">
+      <label class="fl2">📋 荷物リストを流用する（任意）</label>
+      <select class="fi" id="cfs" onchange="onCFC()"><option value="">― 空のリストで始める ―</option></select>
+      <div id="ch" style="display:none;font-size:11px;opacity:.6;margin-top:4px">✓ チェックはすべてリセットされます</div>
+    </div>
+    <button class="fb2" id="aeb" onclick="doAddEv()">イベントを追加</button>
+  </div>
+</div>
+
+<!-- 編集モーダル -->
+<div id="mo" onclick="closeMo()">
+  <div id="mb" onclick="event.stopPropagation()">
+    <div class="mt">✏️ アイテムを編集</div>
+    <input class="fi" id="ein">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <span style="font-size:13px;opacity:.7">数量</span>
+      <input class="qi" id="eiq" type="number" min="0" style="flex:1;width:auto">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="ok" style="flex:1;padding:12px" onclick="saveMo()">保存</button>
+      <button class="ng" style="flex:1;padding:12px" onclick="closeMo()">キャンセル</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+var EVS=[], AID=null, SORT=false, ECID=null, EIID=null, ACID=null;
+
+var DEF=[{id:"ev1",name:"デフォルト",date:"",categories:[
+  {id:"c1",name:"🏗️ 大道具",items:[
+    {id:"a1",name:"台車",qty:1,checked:false},{id:"a2",name:"油切り斜め",qty:1,checked:false},
+    {id:"a3",name:"濾過機",qty:1,checked:false},{id:"a4",name:"からあげサンプル",qty:1,checked:false},
+    {id:"a5",name:"空の油缶",qty:1,checked:false},{id:"a6",name:"ヒートウォーマー",qty:1,checked:false},
+    {id:"a7",name:"フードカバー",qty:1,checked:false},{id:"a8",name:"からあげツリー(佐川)",qty:1,checked:false}]},
+  {id:"c2",name:"🥩 材料",items:[
+    {id:"b1",name:"タレ",qty:1,checked:false},{id:"b2",name:"濾過粉/シート",qty:1,checked:false},
+    {id:"b3",name:"ごま、ブラックペッパー",qty:1,checked:false},{id:"b4",name:"油",qty:1,checked:false},
+    {id:"b5",name:"片栗粉",qty:1,checked:false},{id:"b6",name:"鶏肉",qty:1,checked:false},
+    {id:"b7",name:"下味のタレ",qty:1,checked:false},{id:"b8",name:"冷手羽",qty:1,checked:false}]},
+  {id:"c3",name:"📦 BOX1 キッチン用",items:[
+    {id:"c1i1",name:"タレボトル",qty:1,checked:false},{id:"c1i2",name:"ポリ手袋",qty:1,checked:false},
+    {id:"c1i3",name:"バット",qty:1,checked:false},{id:"c1i4",name:"ラップ",qty:1,checked:false},
+    {id:"c1i5",name:"からあげすくい",qty:1,checked:false},{id:"c1i6",name:"タイマー",qty:1,checked:false},
+    {id:"c1i7",name:"タオル",qty:1,checked:false},{id:"c1i8",name:"スクレーパー",qty:1,checked:false},
+    {id:"c1i9",name:"トング",qty:1,checked:false},{id:"c1i10",name:"ボウル",qty:1,checked:false},
+    {id:"c1i11",name:"ザル",qty:1,checked:false},{id:"c1i12",name:"ハサミ",qty:1,checked:false},
+    {id:"c1i13",name:"ゴシゴシ棒",qty:1,checked:false},{id:"c1i14",name:"缶切り",qty:1,checked:false},
+    {id:"c1i15",name:"キッチンペーパー",qty:1,checked:false},{id:"c1i16",name:"スポンジ",qty:1,checked:false},
+    {id:"c1i17",name:"がんこたわし",qty:1,checked:false},{id:"c1i18",name:"洗剤",qty:1,checked:false},
+    {id:"c1i19",name:"ディスペンサー",qty:1,checked:false},{id:"c1i20",name:"片栗粉入れ",qty:1,checked:false},
+    {id:"c1i21",name:"包丁、まな板",qty:1,checked:false}]},
+  {id:"c4",name:"🎪 BOX2 準備グッズ",items:[
+    {id:"d1",name:"プライスカード",qty:1,checked:false},{id:"d2",name:"POP",qty:1,checked:false},
+    {id:"d3",name:"仕切りレーン",qty:1,checked:false},{id:"d4",name:"賞状",qty:1,checked:false},
+    {id:"d5",name:"両面テープ",qty:1,checked:false},{id:"d6",name:"POPスタンド",qty:1,checked:false},
+    {id:"d7",name:"ハサミ",qty:1,checked:false},{id:"d8",name:"プライスカードスタンド",qty:1,checked:false},
+    {id:"d9",name:"スポットライト",qty:1,checked:false},{id:"d10",name:"磁石",qty:1,checked:false},
+    {id:"d11",name:"クリップ",qty:1,checked:false},{id:"d12",name:"養生テープ",qty:1,checked:false},
+    {id:"d13",name:"延長コード",qty:1,checked:false},{id:"d14",name:"ロープ",qty:1,checked:false},
+    {id:"d15",name:"S字フック",qty:1,checked:false},{id:"d16",name:"結束バンド",qty:1,checked:false},
+    {id:"d17",name:"群鶏一鶴",qty:1,checked:false},{id:"d18",name:"軍手",qty:1,checked:false}]},
+  {id:"c5",name:"🍽️ BOX3 平台周り",items:[
+    {id:"e1",name:"平台土台",qty:1,checked:false},{id:"e2",name:"赤マット",qty:1,checked:false},
+    {id:"e3",name:"平皿シート",qty:1,checked:false},{id:"e4",name:"平皿",qty:1,checked:false},
+    {id:"e5",name:"ミニトング",qty:1,checked:false},{id:"e6",name:"平台透明シート",qty:1,checked:false}]},
+  {id:"c6",name:"🛍️ BOX4 売り場備品",items:[
+    {id:"f1",name:"アバチキTシャツ",qty:1,checked:false},{id:"f2",name:"ヘアキャップ",qty:1,checked:false},
+    {id:"f3",name:"ネット帽",qty:1,checked:false},{id:"f4",name:"輪ゴム",qty:1,checked:false},
+    {id:"f5",name:"ダスター",qty:1,checked:false},{id:"f6",name:"竹串",qty:1,checked:false},
+    {id:"f7",name:"ポリ手袋",qty:1,checked:false},{id:"f8",name:"ゴミ袋",qty:1,checked:false},
+    {id:"f9",name:"ほうきちりとり",qty:1,checked:false},{id:"f10",name:"マスク",qty:1,checked:false}]},
+  {id:"c7",name:"🧾 BOX5 レジ周り",items:[
+    {id:"g1",name:"メモ",qty:1,checked:false},{id:"g2",name:"セロテープ",qty:1,checked:false},
+    {id:"g3",name:"温め直し方",qty:1,checked:false},{id:"g4",name:"からあげ箱",qty:1,checked:false},
+    {id:"g5",name:"ボールペン",qty:1,checked:false},{id:"g6",name:"100円シール",qty:1,checked:false},
+    {id:"g7",name:"ショップカード",qty:1,checked:false},{id:"g8",name:"ショップカード立て",qty:1,checked:false},
+    {id:"g9",name:"アルコール",qty:1,checked:false},{id:"g10",name:"油性ペン",qty:1,checked:false}]},
+  {id:"c8",name:"📋 その他",items:[
+    {id:"h1",name:"フードパック",qty:1,checked:false},{id:"h2",name:"バケツ",qty:1,checked:false},
+    {id:"h3",name:"ラミパック",qty:1,checked:false},{id:"h4",name:"ビニール袋",qty:1,checked:false},
+    {id:"h5",name:"冷手羽表示一括シール",qty:1,checked:false}]},
+  {id:"c9",name:"🏥 保健所",items:[
+    {id:"i1",name:"手洗い洗剤",qty:1,checked:false},{id:"i2",name:"食器洗剤",qty:1,checked:false},
+    {id:"i3",name:"スポンジ",qty:1,checked:false},{id:"i4",name:"ペーパータオル",qty:1,checked:false},
+    {id:"i5",name:"ポリ手袋新品",qty:1,checked:false},{id:"i6",name:"シンク or ポリタンクバケツ",qty:1,checked:false}]},
+  {id:"c10",name:"🚐 キッチンカー",items:[
+    {id:"j1",name:"のぼり",qty:1,checked:false},{id:"j2",name:"暖簾",qty:1,checked:false},
+    {id:"j3",name:"スロープ",qty:1,checked:false},{id:"j4",name:"ダンパーストッパー",qty:1,checked:false},
+    {id:"j5",name:"営業許可証",qty:1,checked:false},{id:"j6",name:"釣り銭",qty:1,checked:false},
+    {id:"j7",name:"レジ",qty:1,checked:false},{id:"j8",name:"プロパンガス",qty:1,checked:false}]}
+]}];
+
+function gid(){return "x"+Math.random().toString(36).substr(2,9);}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function load(){
+  var s=null;
+  try{s=localStorage.getItem("abc3");}catch(e){}
+  if(s){try{var p=JSON.parse(s);if(p&&p.length>0){EVS=p;AID=EVS[0].id;return;}}catch(e){}}
+  EVS=JSON.parse(JSON.stringify(DEF));AID=EVS[0].id;save();
+}
+function save(){try{localStorage.setItem("abc3",JSON.stringify(EVS));}catch(e){}}
+function hardReset(){
+  try{localStorage.removeItem("abc3");}catch(e){}
+  EVS=JSON.parse(JSON.stringify(DEF));AID=EVS[0].id;save();render();
+}
+function getEv(){for(var i=0;i<EVS.length;i++){if(EVS[i].id===AID)return EVS[i];}return null;}
+
+/* 未チェックを先、チェック済みを後に分離 */
+function splitItems(items){
+  var u=[],c=[];
+  for(var i=0;i<items.length;i++){
+    if(items[i].checked) c.push(items[i]); else u.push(items[i]);
+  }
+  return {u:u, c:c};
+}
+
+function render(){rHead();rSel();rCats();rEvList();rCopySel();}
+
+function rHead(){
+  var ev=getEv();var tot=0,chk=0;
+  if(ev){for(var i=0;i<ev.categories.length;i++){var c=ev.categories[i];for(var j=0;j<c.items.length;j++){tot++;if(c.items[j].checked)chk++;}}}
+  var pct=tot===0?0:Math.round(chk/tot*100);
+  document.getElementById("pp").textContent=pct+"%";
+  document.getElementById("pc").textContent=chk+"/"+tot;
+  document.getElementById("pf").style.width=pct+"%";
+  document.getElementById("s0").textContent=tot;
+  document.getElementById("s1").textContent=chk;
+  document.getElementById("s2").textContent=tot-chk;
+}
+
+function rSel(){
+  var sel=document.getElementById("ev");var h="";
+  for(var i=0;i<EVS.length;i++){
+    var e=EVS[i];
+    h+="<option value=\""+esc(e.id)+"\""+(e.id===AID?" selected":"")+">"+esc(e.name)+(e.date?"  "+e.date:"")+"</option>";
+  }
+  sel.innerHTML=h;
+  var ev=getEv();
+  document.getElementById("sortbar").style.display=(ev&&ev.categories.length>0)?"flex":"none";
+}
+
+/* ---- アイテム行HTML生成 ---- */
+function buildItemRow(cat, it, uidx, utotal){
+  /* SORT=true のとき: 未チェックアイテムのみ ▲▼ を表示。チェック済みは▲▼なし */
+  var inSort = SORT && !it.checked;
+  var isFirst = (uidx === 0);
+  var isLast  = (uidx === utotal - 1);
+
+  var h = "<div class=\"ir"+(it.checked?" ck":"")+"\" id=\"r"+esc(it.id)+"\">";
+
+  /* 並び替えボタン列 */
+  if(inSort){
+    h += "<div class=\"mvb\">";
+    h += "<button class=\"mva\""+(isFirst?" disabled":"")+" onclick=\"moveItem('"+cat.id+"','"+it.id+"',-1)\">▲</button>";
+    h += "<button class=\"mva\""+(isLast?" disabled":"")+" onclick=\"moveItem('"+cat.id+"','"+it.id+"',1)\">▼</button>";
+    h += "</div>";
+  } else if(SORT){
+    /* チェック済み行のスペース埋め */
+    h += "<div style=\"width:22px;flex-shrink:0\"></div>";
+  }
+
+  h += "<div class=\"bx"+(it.checked?" ck":"")+"\" onclick=\"togItem('"+cat.id+"','"+it.id+"')\">"+(it.checked?"✓":"")+"</div>";
+  h += "<div class=\"nm"+(it.checked?" ck":"")+"\" onclick=\""+(SORT?"":"openMo('"+cat.id+"','"+it.id+"')")+"\">"+esc(it.name)+"</div>";
+
+  if(!SORT){
+    h += "<div class=\"qc\">";
+    h += "<button class=\"qb\" onclick=\"chQty('"+cat.id+"','"+it.id+"',-1)\">&#8722;</button>";
+    h += "<span class=\"qn\" id=\"q"+esc(it.id)+"\">"+it.qty+"</span>";
+    h += "<button class=\"qb\" onclick=\"chQty('"+cat.id+"','"+it.id+"',1)\">&#43;</button>";
+    h += "</div>";
+    h += "<button class=\"db\" onclick=\"delItem('"+cat.id+"','"+it.id+"')\">&#215;</button>";
+  } else {
+    h += "<span style=\"font-size:11px;opacity:.4;padding-right:4px\">×"+it.qty+"</span>";
+  }
+  h += "</div>";
+  return h;
+}
+
+function rCats(){
+  var cc=document.getElementById("cc");
+  var ev=getEv();
+  if(!ev){
+    cc.innerHTML="<div class=\"emp\"><div style=\"font-size:40px;margin-bottom:8px\">🍗</div><div>イベントがありません</div><div style=\"font-size:12px;margin-top:8px\">「イベント」タブから追加してください</div></div>";
+    document.getElementById("acb").style.display="none";
+    return;
+  }
+  document.getElementById("acb").style.display=SORT?"none":"block";
+  var h="";
+  for(var ci=0;ci<ev.categories.length;ci++){
+    var cat=ev.categories[ci];
+    var chkCnt=0;for(var ii=0;ii<cat.items.length;ii++){if(cat.items[ii].checked)chkCnt++;}
+    var iF=ci===0, iL=ci===ev.categories.length-1;
+
+    /* カテゴリヘッダのボタン */
+    var ca="";
+    if(SORT){
+      ca+="<button class=\"catsa\""+(iF?" disabled":"")+" onclick=\"moveCat('"+cat.id+"',-1)\">&#9650;</button>";
+      ca+="<button class=\"catsa\""+(iL?" disabled":"")+" onclick=\"moveCat('"+cat.id+"',1)\">&#9660;</button>";
+    }
+    ca+="<button class=\"ib\" onclick=\"delCat('"+cat.id+"')\">&#128465;</button>";
+
+    var sub=chkCnt+"/"+cat.items.length+" 完了";
+
+    h+="<div class=\"cb"+(SORT?" sm":"")+"\" id=\"ct"+esc(cat.id)+"\">";
+    h+="<div class=\"ch\"><div><div class=\"cn\">"+esc(cat.name)+"</div><div class=\"cs\">"+sub+"</div></div>";
+    h+="<div class=\"ca\">"+ca+"</div></div>";
+
+    /* アイテム行 */
+    var sp=splitItems(cat.items);
+    for(var ii=0;ii<sp.u.length;ii++){
+      h+=buildItemRow(cat, sp.u[ii], ii, sp.u.length);
+    }
+    if(sp.c.length>0){
+      h+="<div class=\"ck-div\">✓ 完了済み "+sp.c.length+"件</div>";
+      for(var ii=0;ii<sp.c.length;ii++){
+        h+=buildItemRow(cat, sp.c[ii], ii, sp.c.length);
+      }
+    }
+
+    /* アイテム追加フォーム（通常モードのみ） */
+    if(!SORT){
+      if(ACID===cat.id){
+        h+="<div class=\"ar\">";
+        h+="<input class=\"ti\" style=\"flex:1;min-width:80px\" id=\"ni"+cat.id+"\" placeholder=\"アイテム名\">";
+        h+="<input class=\"qi\" id=\"nq"+cat.id+"\" type=\"number\" min=\"0\" value=\"1\">";
+        h+="<button class=\"ok\" onclick=\"doAddItem('"+cat.id+"')\">追加</button>";
+        h+="<button class=\"ng\" onclick=\"cancelAI()\">&#10005;</button>";
+        h+="</div>";
+      }else{
+        h+="<button class=\"aib\" onclick=\"startAI('"+cat.id+"')\">&#65291; アイテムを追加</button>";
+      }
+    }
+    h+="</div>";
+  }
+  cc.innerHTML=h;
+  if(ACID){var el=document.getElementById("ni"+ACID);if(el)el.focus();}
+}
+
+/* ---- 品目の上下移動 ---- */
+function moveItem(cid, iid, d){
+  var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==cid) continue;
+    var items=ev.categories[ci].items;
+    /* 未チェックのみ対象 */
+    var sp=splitItems(items);
+    var idx=-1;
+    for(var k=0;k<sp.u.length;k++){if(sp.u[k].id===iid){idx=k;break;}}
+    if(idx<0) return;
+    var ni=idx+d;
+    if(ni<0||ni>=sp.u.length) return;
+    var tmp=sp.u[idx];sp.u[idx]=sp.u[ni];sp.u[ni]=tmp;
+    ev.categories[ci].items=sp.u.concat(sp.c);
+    save();rCats();return;
+  }
+}
+
+function togSort(){
+  SORT=!SORT;
+  var b=document.getElementById("smb");
+  var hint=document.getElementById("sorthint");
+  if(SORT){
+    b.textContent="✓ 並び替え完了";b.className="smb on";
+    hint.className="sort-hint show";
+  }else{
+    b.textContent="&#8661; 並び替えモード";b.className="smb";
+    hint.className="sort-hint";
+  }
+  rCats();
+}
+
+function togItem(cid,iid){
+  var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==cid) continue;
+    var cat=ev.categories[ci];
+    for(var ii=0;ii<cat.items.length;ii++){
+      if(cat.items[ii].id!==iid) continue;
+      cat.items[ii].checked=!cat.items[ii].checked;
+      var it=cat.items.splice(ii,1)[0];
+      if(it.checked){
+        cat.items.push(it);
+      }else{
+        var lu=0;for(var k=0;k<cat.items.length;k++){if(!cat.items[k].checked)lu=k+1;}
+        cat.items.splice(lu,0,it);
+      }
+      save();
+      var fl=document.getElementById("fl");fl.style.animation="fp .6s ease";
+      setTimeout(function(){document.getElementById("fl").style.animation="";},600);
+      rCats();rHead();return;
+    }
+  }
+}
+
+function chQty(cid,iid,d){
+  var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==cid) continue;
+    for(var ii=0;ii<ev.categories[ci].items.length;ii++){
+      if(ev.categories[ci].items[ii].id!==iid) continue;
+      var v=ev.categories[ci].items[ii].qty+d;if(v<0)v=0;
+      ev.categories[ci].items[ii].qty=v;save();
+      var el=document.getElementById("q"+iid);if(el)el.textContent=v;return;
+    }
+  }
+}
+
+function delItem(cid,iid){
+  var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==cid) continue;
+    var arr=[];for(var ii=0;ii<ev.categories[ci].items.length;ii++){if(ev.categories[ci].items[ii].id!==iid)arr.push(ev.categories[ci].items[ii]);}
+    ev.categories[ci].items=arr;save();rCats();rHead();return;
+  }
+}
+
+function startAI(cid){ACID=cid;rCats();}
+function cancelAI(){ACID=null;rCats();}
+function doAddItem(cid){
+  var ne=document.getElementById("ni"+cid);var qe=document.getElementById("nq"+cid);
+  if(!ne)return;var name=ne.value.trim();if(!name)return;
+  var qty=1;if(qe){var qv=parseInt(qe.value);if(qv>0)qty=qv;}
+  var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==cid) continue;
+    var cat=ev.categories[ci];
+    var lu=0;for(var k=0;k<cat.items.length;k++){if(!cat.items[k].checked)lu=k+1;}
+    cat.items.splice(lu,0,{id:gid(),name:name,qty:qty,checked:false});
+    save();ACID=null;rCats();rHead();return;
+  }
+}
+
+function showAC(){document.getElementById("acf").style.display="block";document.getElementById("acb").style.display="none";document.getElementById("ncn").focus();}
+function hideAC(){document.getElementById("acf").style.display="none";document.getElementById("acb").style.display="block";}
+function doAddCat(){
+  var name=document.getElementById("ncn").value.trim();if(!name)return;
+  var ev=getEv();if(!ev)return;
+  ev.categories.push({id:gid(),name:name,items:[]});
+  save();document.getElementById("ncn").value="";hideAC();rCats();rSel();
+}
+function delCat(cid){
+  var ev=getEv();if(!ev)return;
+  var cats=[];for(var i=0;i<ev.categories.length;i++){if(ev.categories[i].id!==cid)cats.push(ev.categories[i]);}
+  ev.categories=cats;save();rCats();rSel();rHead();
+}
+function moveCat(cid,d){
+  var ev=getEv();if(!ev)return;
+  var idx=-1;for(var i=0;i<ev.categories.length;i++){if(ev.categories[i].id===cid){idx=i;break;}}
+  var ni=idx+d;if(ni<0||ni>=ev.categories.length)return;
+  var tmp=ev.categories[idx];ev.categories[idx]=ev.categories[ni];ev.categories[ni]=tmp;
+  save();rCats();
+}
+
+function doReset(){
+  var ev=getEv();if(!ev)return;
+  for(var ci=0;ci<ev.categories.length;ci++){for(var ii=0;ii<ev.categories[ci].items.length;ii++){ev.categories[ci].items[ii].checked=false;}}
+  save();rCats();rHead();
+}
+
+function rEvList(){
+  var el=document.getElementById("el");var h="";
+  for(var i=0;i<EVS.length;i++){
+    var e=EVS[i];var tot=0,chk=0;
+    for(var ci=0;ci<e.categories.length;ci++){var c=e.categories[ci];for(var ii=0;ii<c.items.length;ii++){tot++;if(c.items[ii].checked)chk++;}}
+    var act=e.id===AID;
+    h+="<div class=\"ec"+(act?" on":"")+"\">";
+    h+="<div style=\"flex:1\"><div style=\"font-weight:800;font-size:15px\">"+esc(e.name)+"</div>";
+    if(e.date)h+="<div style=\"font-size:11px;opacity:.6;margin-top:2px\">"+esc(e.date)+"</div>";
+    h+="<div style=\"font-size:11px;color:#d4a520;margin-top:4px\">"+chk+"/"+tot+" チェック済み</div></div>";
+    h+="<button class=\"esb"+(act?" on":"")+"\" onclick=\"selEv('"+e.id+"')\">"+(act?"✓ 選択中":"選択")+"</button>";
+    if(EVS.length>1)h+="<button class=\"ib\" onclick=\"delEv('"+e.id+"')\">&#128465;</button>";
+    h+="</div>";
+  }
+  el.innerHTML=h;
+}
+
+function rCopySel(){
+  var sel=document.getElementById("cfs");var cur=sel.value;
+  var h="<option value=\"\">&#12540; 空のリストで始める &#12540;</option>";
+  for(var i=0;i<EVS.length;i++){var e=EVS[i];h+="<option value=\""+esc(e.id)+"\""+(e.id===cur?" selected":"")+">"+esc(e.name)+(e.date?"  "+e.date:"")+"</option>";}
+  sel.innerHTML=h;
+}
+
+function sw(v){
+  document.getElementById("vc").style.display=v==="c"?"block":"none";
+  document.getElementById("ve").style.display=v==="e"?"block":"none";
+  document.getElementById("n0").className="nb"+(v==="c"?" on":"");
+  document.getElementById("n1").className="nb"+(v==="e"?" on":"");
+  if(v==="c"){SORT=false;var b=document.getElementById("smb");b.textContent="&#8661; 並び替えモード";b.className="smb";document.getElementById("sorthint").className="sort-hint";rCats();}
+  else rCopySel();
+}
+function onSel(id){AID=id;render();}
+function selEv(id){AID=id;sw("c");render();}
+
+function doAddEv(){
+  var name=document.getElementById("nen").value.trim();if(!name)return;
+  var date=document.getElementById("ned").value;var copyId=document.getElementById("cfs").value;
+  var cats=[];
+  if(copyId){
+    for(var i=0;i<EVS.length;i++){
+      if(EVS[i].id!==copyId)continue;var src=EVS[i];
+      for(var ci=0;ci<src.categories.length;ci++){
+        var sc=src.categories[ci];var items=[];
+        for(var ii=0;ii<sc.items.length;ii++){var si=sc.items[ii];items.push({id:gid(),name:si.name,qty:si.qty,checked:false});}
+        cats.push({id:gid(),name:sc.name,items:items});
+      }break;
+    }
+  }
+  var ne={id:gid(),name:name,date:date,categories:cats};EVS.push(ne);AID=ne.id;save();
+  document.getElementById("nen").value="";document.getElementById("ned").value="";
+  document.getElementById("cfs").value="";document.getElementById("ch").style.display="none";
+  document.getElementById("aeb").textContent="イベントを追加";sw("c");render();
+}
+function delEv(id){
+  var evs=[];for(var i=0;i<EVS.length;i++){if(EVS[i].id!==id)evs.push(EVS[i]);}
+  EVS=evs;if(AID===id)AID=EVS.length>0?EVS[0].id:null;save();render();
+}
+function onCFC(){
+  var v=document.getElementById("cfs").value;
+  document.getElementById("ch").style.display=v?"block":"none";
+  document.getElementById("aeb").textContent=v?"&#128203; 流用してイベントを追加":"イベントを追加";
+}
+function openMo(cid,iid){
+  var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==cid)continue;
+    for(var ii=0;ii<ev.categories[ci].items.length;ii++){
+      if(ev.categories[ci].items[ii].id!==iid)continue;
+      var it=ev.categories[ci].items[ii];ECID=cid;EIID=iid;
+      document.getElementById("ein").value=it.name;document.getElementById("eiq").value=it.qty;
+      document.getElementById("mo").className="show";setTimeout(function(){document.getElementById("ein").focus();},100);return;
+    }
+  }
+}
+function closeMo(){document.getElementById("mo").className="";ECID=null;EIID=null;}
+function saveMo(){
+  if(!ECID||!EIID)return;var ev=getEv();
+  for(var ci=0;ci<ev.categories.length;ci++){
+    if(ev.categories[ci].id!==ECID)continue;
+    for(var ii=0;ii<ev.categories[ci].items.length;ii++){
+      if(ev.categories[ci].items[ii].id!==EIID)continue;
+      var n=document.getElementById("ein").value.trim();var q=parseInt(document.getElementById("eiq").value);
+      if(n)ev.categories[ci].items[ii].name=n;ev.categories[ci].items[ii].qty=isNaN(q)?0:q;
+      save();closeMo();rCats();return;
+    }
+  }
+}
+
+load();render();
+</script>
+</body>
+</html>
